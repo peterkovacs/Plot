@@ -4,25 +4,26 @@
 *  MIT license, see LICENSE file for details
 */
 
-import XCTest
+import Testing
 import Plot
+import Foundation
 
-final class XMLTests: XCTestCase {
-    func testEmptyXML() {
+@Suite("XML") struct XMLTests {
+    @Test func testEmptyXML() {
         assertEqualXMLContent(XML(), "")
     }
 
-    func testSingleElement() {
+    @Test func testSingleElement() {
         let xml = XML(.element(named: "hello", text: "world!"))
         assertEqualXMLContent(xml, "<hello>world!</hello>")
     }
 
-    func testSelfClosingElement() {
+    @Test func testSelfClosingElement() {
         let xml = XML(.selfClosedElement(named: "element"))
         assertEqualXMLContent(xml, "<element/>")
     }
 
-    func testElementWithAttribute() {
+    @Test func testElementWithAttribute() {
         let xml = XML(.element(
             named: "element",
             nodes: [
@@ -33,7 +34,7 @@ final class XMLTests: XCTestCase {
         assertEqualXMLContent(xml, #"<element attribute="value"></element>"#)
     }
 
-    func testElementWithChildren() {
+    @Test func testElementWithChildren() {
         let xml = XML(
             .element(named: "parent", nodes: [
                 .selfClosedElement(named: "a"),

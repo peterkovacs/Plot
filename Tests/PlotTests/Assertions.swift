@@ -4,58 +4,58 @@
 *  MIT license, see LICENSE file for details
 */
 
-import XCTest
+import Testing
 import Plot
 
 func assertEqualHTMLContent(
     _ document: HTML,
     _ content: String,
-    file: StaticString = #file,
-    line: UInt = #line
+    fileId: String = #fileID,
+    file: String = #filePath,
+    line: Int = #line,
+    column: Int = #column
 ) {
     let html = document.render()
     let expectedPrefix = "<!DOCTYPE html><html>"
     let expectedSuffix = "</html>"
 
-    XCTAssertTrue(
+    #expect(
         html.hasPrefix(expectedPrefix),
         """
         Invalid HTML prefix.
         Expected '\(expectedPrefix)'.
         Found '\(html.prefix(expectedPrefix.count))'.
         """,
-        file: file,
-        line: line
+        sourceLocation: .init(fileID: fileId, filePath: file, line: line, column: column)
     )
 
-    XCTAssertTrue(
+    #expect(
         html.hasSuffix(expectedSuffix),
         """
         Invalid HTML suffix.
         Expected '\(expectedSuffix)'.
         Found '\(html.suffix(expectedSuffix.count))'.
         """,
-        file: file,
-        line: line
+        sourceLocation: .init(fileID: fileId, filePath: file, line: line, column: column)
     )
 
     let expectedContent = html
         .dropFirst(expectedPrefix.count)
         .dropLast(expectedSuffix.count)
 
-    XCTAssertEqual(
-        String(expectedContent),
-        content,
-        file: file,
-        line: line
+    #expect(
+        String(expectedContent) == content,
+        sourceLocation: .init(fileID: fileId, filePath: file, line: line, column: column)
     )
 }
 
 func assertEqualSiteMapContent(
     _ document: SiteMap,
     _ content: String,
-    file: StaticString = #file,
-    line: UInt = #line
+    fileId: String = #fileID,
+    file: String = #filePath,
+    line: Int = #line,
+    column: Int = #column
 ) {
     let map = document.render()
 
@@ -66,73 +66,70 @@ func assertEqualSiteMapContent(
 
     let expectedSuffix = "</urlset>"
 
-    XCTAssertTrue(
+    #expect(
         map.hasPrefix(expectedPrefix),
         """
         Invalid SiteMap prefix.
         Expected '\(expectedPrefix)'.
         Found '\(map.prefix(expectedPrefix.count))'.
         """,
-        file: file,
-        line: line
+        sourceLocation: .init(fileID: fileId, filePath: file, line: line, column: column)
     )
 
-    XCTAssertTrue(
+    #expect(
         map.hasSuffix(expectedSuffix),
         """
         Invalid SiteMap suffix.
         Expected '\(expectedSuffix)'.
         Found '\(map.suffix(expectedSuffix.count))'.
         """,
-        file: file,
-        line: line
+        sourceLocation: .init(fileID: fileId, filePath: file, line: line, column: column)
     )
 
     let expectedContent = map
         .dropFirst(expectedPrefix.count)
         .dropLast(expectedSuffix.count)
 
-    XCTAssertEqual(
-        String(expectedContent),
-        content,
-        file: file,
-        line: line
+    #expect(
+        String(expectedContent) == content,
+        sourceLocation: .init(fileID: fileId, filePath: file, line: line, column: column)
     )
 }
 
 func assertEqualXMLContent(
     _ document: XML,
     _ content: String,
-    file: StaticString = #file,
-    line: UInt = #line
+    fileId: String = #fileID,
+    file: String = #filePath,
+    line: Int = #line,
+    column: Int = #column
 ) {
     let xml = document.render()
     let declaration = #"<?xml version="1.0" encoding="UTF-8"?>"#
 
-    XCTAssertTrue(
+    #expect(
         xml.hasPrefix(declaration),
         """
         Invalid XML declaration.
         Expected '\(declaration)'.
         Found '\(xml.prefix(declaration.count))'.
         """,
-        file: file,
-        line: line
+        sourceLocation: .init(fileID: fileId, filePath: file, line: line, column: column)
     )
 
-    XCTAssertEqual(
-        String(xml.dropFirst(declaration.count)),
-        content,
-        file: file,
-        line: line
+    #expect(
+        String(xml.dropFirst(declaration.count)) == content,
+        sourceLocation: .init(fileID: fileId, filePath: file, line: line, column: column)
     )
 }
 
 func assertEqualPodcastFeedContent(
     _ feed: PodcastFeed,
     _ content: String,
-    file: StaticString = #file,
-    line: UInt = #line
+    fileId: String = #fileID,
+    file: String = #filePath,
+    line: Int = #line,
+    column: Int = #column
 ) {
     assertEqualRSSFeedContent(
         feed,
@@ -144,16 +141,20 @@ func assertEqualPodcastFeedContent(
             ("itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd"),
             ("media", "http://www.rssboard.org/media-rss")
         ],
+        fileId: fileId,
         file: file,
-        line: line
+        line: line,
+        column: column
     )
 }
 
 func assertEqualRSSFeedContent(
     _ feed: RSS,
     _ content: String,
-    file: StaticString = #file,
-    line: UInt = #line
+    fileId: String = #fileID,
+    file: String = #filePath,
+    line: Int = #line,
+    column: Int = #column
 ) {
     assertEqualRSSFeedContent(
         feed,
@@ -163,8 +164,10 @@ func assertEqualRSSFeedContent(
             ("atom", "http://www.w3.org/2005/Atom"),
             ("content", "http://purl.org/rss/1.0/modules/content/")
         ],
+        fileId: fileId,
         file: file,
-        line: line
+        line: line,
+        column: column
     )
 }
 
@@ -173,8 +176,10 @@ private func assertEqualRSSFeedContent<R: Renderable>(
     _ content: String,
     type: String,
     namespaces: [(name: String, url: String)],
-    file: StaticString,
-    line: UInt
+    fileId: String,
+    file: String,
+    line: Int,
+    column: Int
 ) {
     let xmlDeclaration = XML().render()
 
@@ -187,35 +192,31 @@ private func assertEqualRSSFeedContent<R: Renderable>(
 
     let xml = feed.render()
 
-    XCTAssertTrue(
+    #expect(
         xml.hasPrefix(expectedPrefix),
         """
         Invalid \(type) feed prefix.
         Expected '\(expectedPrefix)'.
         Found '\(xml.prefix(expectedPrefix.count))'.
         """,
-        file: file,
-        line: line
+        sourceLocation: .init(fileID: fileId, filePath: file, line: line, column: column)
     )
 
-    XCTAssertTrue(
+    #expect(
         xml.hasSuffix(expectedSuffix),
         """
         \(type.capitalized) feed is not closed with '\(expectedSuffix)'.
         Feed: '\(xml)'
         """,
-        file: file,
-        line: line
+        sourceLocation: .init(fileID: fileId, filePath: file, line: line, column: column)
     )
 
     let expectedContent = xml
         .dropFirst(expectedPrefix.count)
         .dropLast(expectedSuffix.count)
 
-    XCTAssertEqual(
-        String(expectedContent),
-        content,
-        file: file,
-        line: line
+    #expect(
+        String(expectedContent) == content,
+        sourceLocation: .init(fileID: fileId, filePath: file, line: line, column: column)
     )
 }

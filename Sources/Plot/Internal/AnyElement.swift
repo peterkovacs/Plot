@@ -4,7 +4,7 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal protocol AnyElement {
+internal protocol AnyElement: Sendable {
     var name: String { get }
     var closingMode: ElementClosingMode { get }
     var paddingCharacter: Character? { get }

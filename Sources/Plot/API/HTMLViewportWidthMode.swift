@@ -8,7 +8,7 @@ import Foundation
 
 /// Enum defining various ways that the width of an HTML page's
 /// viewport can scale across different screen sizes.
-public enum HTMLViewportWidthMode {
+public enum HTMLViewportWidthMode: Sendable {
     /// The viewport should scale according to the user's device.
     case accordingToDevice
     /// The viewport should remain constant, at a given number

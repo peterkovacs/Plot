@@ -8,7 +8,7 @@ import Foundation
 
 /// Enum that defines various button types that can be used with the
 /// `<button/>` HTML element. For example `.button(.type(.submit))`.
-public enum HTMLButtonType: String {
+public enum HTMLButtonType: String, Sendable {
     case button
     case reset
     case submit

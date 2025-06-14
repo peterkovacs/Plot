@@ -9,7 +9,7 @@ import Foundation
 /// A representation of an HTML document. Create an instance of this
 /// type to build a web page using Plot's type-safe DSL, and then
 /// call the `render()` method to turn it into an HTML string.
-public struct HTML: DocumentFormat {
+public struct HTML: DocumentFormat, Sendable {
     private let document: Document<HTML>
     private var environmentOverrides = [Environment.Override]()
 
@@ -52,7 +52,7 @@ public extension HTML {
     /// - parameter key: The key to associate the value wth. You can either use any
     ///   of the built-in key definitions that Plot ships with, or define your own.
     ///   See `EnvironmentKey` for more information.
-    func environmentValue<T>(_ value: T, key: EnvironmentKey<T>) -> HTML {
+    func environmentValue<T: Sendable>(_ value: T, key: EnvironmentKey<T>) -> HTML {
         var html = self
         html.environmentOverrides.append(.init(key: key, value: value))
         return html
@@ -102,6 +102,7 @@ public extension HTML {
     enum DescriptionListContext: HTMLStylableContext, HTMLDividableContext {}
     /// The context within an HTML `<details>` element.
     final class DetailsContext: BodyContext {}
+    // enum DividerContext: HTMLStylableContext, HTMLDimensionContext {}
     /// The context within an HTML `<embed>` element.
     enum EmbedContext: HTMLStylableContext, HTMLSourceContext, HTMLTypeContext, HTMLDimensionContext {}
     /// The context within an HTML `<form>` element.

@@ -5,7 +5,7 @@
 */
 
 /// Enum describing all valid values for a site map url's change frequency.
-public enum SiteMapChangeFrequency: String {
+public enum SiteMapChangeFrequency: String, Sendable {
     case always
     case hourly
     case daily

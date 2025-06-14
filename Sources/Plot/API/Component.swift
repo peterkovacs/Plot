@@ -21,7 +21,7 @@ import Foundation
 /// and `id`, and using the `EnvironmentValue` property wrapper and the
 /// `EnvironmentKey` type, you can propagate environmental values through
 /// a hierarchy of nodes and components.
-public protocol Component: Renderable {
+public protocol Component: Renderable, Sendable {
     /// The underlying component that should be used to render this component.
     /// Can either be a `Node`, another `Component`, or a group of components
     /// created using the `ComponentGroup` type.
@@ -33,7 +33,7 @@ public extension Component {
     /// given component. Closures of this type are typically marked with the
     /// `@ComponentBuilder` attribute to enable Plot's DSL to be used when
     /// implementing them.
-    typealias ContentProvider = () -> ComponentGroup
+    typealias ContentProvider = @Sendable () -> ComponentGroup
 
     /// Add an attribute to the HTML element used to render this component.
     /// - parameter name: The name of the attribute to add.
@@ -88,7 +88,7 @@ public extension Component {
     /// - parameter key: The key to associate the value with. You can either use any
     ///   of the built-in key definitions that Plot ships with, or define your own.
     ///   See `EnvironmentKey` for more information.
-    func environmentValue<T>(_ value: T, key: EnvironmentKey<T>) -> Component {
+    func environmentValue<T: Sendable>(_ value: T, key: EnvironmentKey<T>) -> Component {
         let override = Environment.Override(key: key, value: value)
 
         if var modified = self as? ModifiedComponent {

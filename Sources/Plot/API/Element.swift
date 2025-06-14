@@ -10,7 +10,7 @@ import Foundation
 /// You normally don't construct `Element` values manually, but rather use Plot's
 /// various DSL APIs to create them, for example by creating a `<body>` tag using
 /// `.body()`, or a `<p>` tag using `.p()`.
-public struct Element<Context>: AnyElement {
+public struct Element<Context>: AnyElement, Sendable {
     /// The name of the element
     public var name: String
     /// How the element is closed, for example if it's self-closing or if it can

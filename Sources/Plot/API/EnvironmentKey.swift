@@ -11,7 +11,7 @@ import Foundation
 /// another value for the same key. You can place values into the environment
 /// using the `environmentValue` modifier, and you can then retrieve those
 /// values within any component using the `EnvironmentValue` property wrapper.
-public struct EnvironmentKey<Value> {
+public struct EnvironmentKey<Value: Sendable>: Sendable {
     internal let identifier: StaticString
     internal let defaultValue: Value
 

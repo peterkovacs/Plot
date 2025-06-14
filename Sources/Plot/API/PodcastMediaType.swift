@@ -7,7 +7,7 @@
 import Foundation
 
 /// Enum describing various podcast media types
-public enum PodcastMediaType: String {
+public enum PodcastMediaType: String, Sendable {
     case audio
     case video
 }

@@ -4,6 +4,6 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal protocol AnyNode {
+internal protocol AnyNode: Sendable {
     func render(into renderer: inout Renderer)
 }

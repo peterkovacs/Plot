@@ -4,25 +4,26 @@
 *  MIT license, see LICENSE file for details
 */
 
-import XCTest
+import Testing
 import Plot
+import Foundation
 
-final class IndentationTests: XCTestCase {
-    func testSpacesCoding() throws {
+@Suite("Indentation") struct IndentationTests {
+    @Test func testSpacesCoding() throws {
         let indentation = Indentation(kind: .spaces(4))
         let data = try JSONEncoder().encode(indentation)
         let decoded = try JSONDecoder().decode(Indentation.self, from: data)
-        XCTAssertEqual(indentation, decoded)
+        #expect(indentation == decoded)
     }
 
-    func testTabsCoding() throws {
+    @Test func testTabsCoding() throws {
         let indentation = Indentation(kind: .tabs(1))
         let data = try JSONEncoder().encode(indentation)
         let decoded = try JSONDecoder().decode(Indentation.self, from: data)
-        XCTAssertEqual(indentation, decoded)
+        #expect(indentation == decoded)
     }
 
-    func testDecodingErrorForInvalidKind() throws {
+    @Test func testDecodingErrorForInvalidKind() throws {
         func makeData(withKind kind: String) -> Data {
             Data(#"{"kind":"\#(kind)","count": 3}"#.utf8)
         }
@@ -31,12 +32,10 @@ final class IndentationTests: XCTestCase {
         let validData = makeData(withKind: "spaces")
         let invalidData = makeData(withKind: "invalid")
 
-        XCTAssertNoThrow(
-            try decoder.decode(Indentation.Kind.self, from: validData)
-        )
+        #expect(try decoder.decode(Indentation.Kind.self, from: validData) == .spaces(3))
 
-        XCTAssertThrowsError(
-            try decoder.decode(Indentation.Kind.self, from: invalidData)
-        )
+        #expect(throws: DecodingError.self) {
+            _ = try decoder.decode(Indentation.Kind.self, from: invalidData)
+        }
     }
 }

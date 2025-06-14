@@ -8,7 +8,7 @@ import Foundation
 
 /// Enum that defines various input types that can be used with the
 /// `<input/>` HTML element. For example `.input(.type(.text))`.
-public enum HTMLInputType: String {
+public enum HTMLInputType: String, Sendable {
     case button
     case checkbox
     case color

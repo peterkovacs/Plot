@@ -7,7 +7,7 @@
 import Foundation
 
 /// Enum defining the fit parameters of the viewport meta tag.
-public enum HTMLViewportFitMode: String {
+public enum HTMLViewportFitMode: String, Sendable {
     /// The default viewport fit behavior.
     case auto
     /// The initial layout viewport and the visual viewport are set

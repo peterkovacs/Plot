@@ -4,26 +4,27 @@
 *  MIT license, see LICENSE file for details
 */
 
-import XCTest
+import Testing
 import Plot
+import Foundation
 
-final class RSSTests: XCTestCase {
-    func testEmptyFeed() {
+@Suite("RSS") struct RSSTests {
+    @Test func testEmptyFeed() {
         let feed = RSS()
         assertEqualRSSFeedContent(feed, "")
     }
 
-    func testFeedTitle() {
+    @Test func testFeedTitle() {
         let feed = RSS(.title("MyPodcast"))
         assertEqualRSSFeedContent(feed, "<title>MyPodcast</title>")
     }
 
-    func testFeedDescription() {
+    @Test func testFeedDescription() {
         let feed = RSS(.description("Description"))
         assertEqualRSSFeedContent(feed, "<description>Description</description>")
     }
 
-    func testFeedDescriptionWithHTMLContent() {
+    @Test func testFeedDescriptionWithHTMLContent() {
         let feed = RSS(
             .description(
                 .p(
@@ -36,41 +37,41 @@ final class RSSTests: XCTestCase {
         assertEqualRSSFeedContent(feed, "<description><![CDATA[<p>Description with <em>emphasis</em>.</p>]]></description>")
     }
 
-    func testFeedURL() {
+    @Test func testFeedURL() {
         let feed = RSS(.link("url.com"))
         assertEqualRSSFeedContent(feed, "<link>url.com</link>")
     }
 
-    func testFeedAtomLink() {
+    @Test func testFeedAtomLink() {
         let feed = RSS(.atomLink("url.com"))
         assertEqualRSSFeedContent(feed, """
         <atom:link href="url.com" rel="self" type="application/rss+xml"/>
         """)
     }
 
-    func testFeedLanguage() {
+    @Test func testFeedLanguage() {
         let feed = RSS(.language(.usEnglish))
         assertEqualRSSFeedContent(feed, "<language>en-us</language>")
     }
 
-    func testFeedTTL() {
+    @Test func testFeedTTL() {
         let feed = RSS(.ttl(200))
         assertEqualRSSFeedContent(feed, "<ttl>200</ttl>")
     }
 
-    func testFeedPublicationDate() throws {
+    @Test func testFeedPublicationDate() throws {
         let stubs = try Date.makeStubs(withFormattingStyle: .rss)
         let feed = RSS(.pubDate(stubs.date, timeZone: stubs.timeZone))
         assertEqualRSSFeedContent(feed, "<pubDate>\(stubs.expectedString)</pubDate>")
     }
 
-    func testFeedLastBuildDate() throws {
+    @Test func testFeedLastBuildDate() throws {
         let stubs = try Date.makeStubs(withFormattingStyle: .rss)
         let feed = RSS(.lastBuildDate(stubs.date, timeZone: stubs.timeZone))
         assertEqualRSSFeedContent(feed, "<lastBuildDate>\(stubs.expectedString)</lastBuildDate>")
     }
 
-    func testItemGUID() {
+    @Test func testItemGUID() {
         let feed = RSS(
             .item(.guid("123")),
             .item(.guid("url.com", .isPermaLink(true))),
@@ -84,24 +85,24 @@ final class RSSTests: XCTestCase {
         """)
     }
 
-    func testItemTitle() {
+    @Test func testItemTitle() {
         let feed = RSS(.item(.title("Title")))
         assertEqualRSSFeedContent(feed, "<item><title>Title</title></item>")
     }
 
-    func testItemDescription() {
+    @Test func testItemDescription() {
         let feed = RSS(.item(.description("Description")))
         assertEqualRSSFeedContent(feed, """
         <item><description>Description</description></item>
         """)
     }
 
-    func testItemURL() {
+    @Test func testItemURL() {
         let feed = RSS(.item(.link("url.com")))
         assertEqualRSSFeedContent(feed, "<item><link>url.com</link></item>")
     }
 
-    func testItemPublicationDate() throws {
+    @Test func testItemPublicationDate() throws {
         let stubs = try Date.makeStubs(withFormattingStyle: .rss)
         let feed = RSS(.item(.pubDate(stubs.date, timeZone: stubs.timeZone)))
         assertEqualRSSFeedContent(feed, """
@@ -109,7 +110,7 @@ final class RSSTests: XCTestCase {
         """)
     }
 
-    func testItemHTMLStringContent() {
+    @Test func testItemHTMLStringContent() {
         let feed = RSS(.item(.content(
             "<p>Hello</p><p>World &amp; Everyone!</p>"
         )))
@@ -123,7 +124,7 @@ final class RSSTests: XCTestCase {
         """)
     }
 
-    func testItemHTMLDSLContent() {
+    @Test func testItemHTMLDSLContent() {
         let feed = RSS(.item(
             .content(.h1("Title"))
         ))

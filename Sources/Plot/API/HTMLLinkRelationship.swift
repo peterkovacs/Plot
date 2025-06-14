@@ -9,7 +9,7 @@ import Foundation
 /// An enum that defines various values for an HTML link's `rel`
 /// attribute, which specifies the relationship that the link has
 /// to the resource that it's linking to.
-public enum HTMLLinkRelationship: String {
+public enum HTMLLinkRelationship: String, Sendable {
     case alternate
     case appleTouchIcon = "apple-touch-icon"
     case author

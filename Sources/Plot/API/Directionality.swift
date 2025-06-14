@@ -5,7 +5,7 @@
  */
 
 /// Enum defining an element's text directionality.
-public enum Directionality: String {
+public enum Directionality: String, Sendable {
     case leftToRight = "ltr"
     case rightToLeft = "rtl"
     case auto = "auto"

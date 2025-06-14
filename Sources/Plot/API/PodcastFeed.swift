@@ -9,7 +9,7 @@ import Foundation
 /// A representation of a podcast feed. Create an instance of this
 /// type to build a feed using Plot's type-safe DSL, and then call
 /// the `render()` method to turn it into an RSS string.
-public struct PodcastFeed: RSSBasedDocumentFormat {
+public struct PodcastFeed: RSSBasedDocumentFormat, Sendable {
     private let document: Document<PodcastFeed>
 
     /// Create a podcast feed with a collection of nodes that make

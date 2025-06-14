@@ -104,7 +104,9 @@ extension Renderer {
 
             for property in componentMirror.children {
                 if let environmentValue = property.value as? AnyEnvironmentValue {
-                    environmentValue.environment.value = environment
+                    environmentValue.environment.withLock { [environment] state in
+                        state = environment
+                    }
                 }
             }
         }

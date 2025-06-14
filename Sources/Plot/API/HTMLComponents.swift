@@ -132,53 +132,53 @@ public extension Node where Context == HTML.HeadContext {
 // MARK: - Element-based
 
 /// Enum namespace that contains Plot's built-in `ElementDefinition` implementations.
-public enum ElementDefinitions {
+public enum ElementDefinitions: Sendable {
     /// Definition for the `<article>` element.
-    public enum Article: ElementDefinition { public static var wrapper = Node.article }
+    public enum Article: ElementDefinition { public static let wrapper = Node.article }
     /// Definition for the `<aside>` element.
-    public enum Aside: ElementDefinition { public static var wrapper = Node.aside }
+    public enum Aside: ElementDefinition { public static let wrapper = Node.aside }
     /// Definition for the `<button>` element.
-    public enum Button: ElementDefinition { public static var wrapper = Node.button }
+    public enum Button: ElementDefinition { public static let wrapper = Node.button }
     /// Definition for the `<details>` element.
-    public enum Details: ElementDefinition { public static var wrapper = Node.details }
+    public enum Details: ElementDefinition { public static let wrapper = Node.details }
     /// Definition for the `<div>` element.
-    public enum Div: ElementDefinition { public static var wrapper = Node<HTML.BodyContext>.div }
+    public enum Div: ElementDefinition { public static let wrapper = Node<HTML.BodyContext>.div }
     /// Definition for the `<fieldset>` element.
-    public enum FieldSet: ElementDefinition { public static var wrapper = Node.fieldset }
+    public enum FieldSet: ElementDefinition { public static let wrapper = Node.fieldset }
     /// Definition for the `<footer>` element.
-    public enum Footer: ElementDefinition { public static var wrapper = Node.footer }
+    public enum Footer: ElementDefinition { public static let wrapper = Node.footer }
     /// Definition for the `<h1>` element.
-    public enum H1: ElementDefinition { public static var wrapper = Node.h1 }
+    public enum H1: ElementDefinition { public static let wrapper = Node.h1 }
     /// Definition for the `<h2>` element.
-    public enum H2: ElementDefinition { public static var wrapper = Node.h2 }
+    public enum H2: ElementDefinition { public static let wrapper = Node.h2 }
     /// Definition for the `<h3>` element.
-    public enum H3: ElementDefinition { public static var wrapper = Node.h3 }
+    public enum H3: ElementDefinition { public static let wrapper = Node.h3 }
     /// Definition for the `<h4>` element.
-    public enum H4: ElementDefinition { public static var wrapper = Node.h4 }
+    public enum H4: ElementDefinition { public static let wrapper = Node.h4 }
     /// Definition for the `<h5>` element.
-    public enum H5: ElementDefinition { public static var wrapper = Node.h5 }
+    public enum H5: ElementDefinition { public static let wrapper = Node.h5 }
     /// Definition for the `<h6>` element.
-    public enum H6: ElementDefinition { public static var wrapper = Node.h6 }
+    public enum H6: ElementDefinition { public static let wrapper = Node.h6 }
     /// Definition for the `<header>` element.
-    public enum Header: ElementDefinition { public static var wrapper = Node.header }
+    public enum Header: ElementDefinition { public static let wrapper = Node.header }
     /// Definition for the `<li>` element.
-    public enum ListItem: ElementDefinition { public static var wrapper = Node.li }
+    public enum ListItem: ElementDefinition { public static let wrapper = Node.li }
     /// Definition for the `<main>` element.
-    public enum Main: ElementDefinition { public static var wrapper = Node.main }
+    public enum Main: ElementDefinition { public static let wrapper = Node.main }
     /// Definition for the `<nav>` element.
-    public enum Navigation: ElementDefinition { public static var wrapper = Node.nav }
+    public enum Navigation: ElementDefinition { public static let wrapper = Node.nav }
     /// Definition for the `<p>` element.
-    public enum Paragraph: ElementDefinition { public static var wrapper = Node.p }
+    public enum Paragraph: ElementDefinition { public static let wrapper = Node.p }
     /// Definition for the `<span>` element.
-    public enum Span: ElementDefinition { public static var wrapper = Node.span }
+    public enum Span: ElementDefinition { public static let wrapper = Node.span }
     /// Definition for the `<summary>` element.
-    public enum Summary: ElementDefinition { public static var wrapper = Node.summary }
+    public enum Summary: ElementDefinition { public static let wrapper = Node.summary }
     /// Definition for the `<caption>` element.
-    public enum TableCaption: ElementDefinition { public static var wrapper = Node.caption }
+    public enum TableCaption: ElementDefinition { public static let wrapper = Node.caption }
     /// Definition for the `<td>` element.
-    public enum TableCell: ElementDefinition { public static var wrapper = Node.td }
+    public enum TableCell: ElementDefinition { public static let wrapper = Node.td }
     /// Definition for the `<th>` element.
-    public enum TableHeaderCell: ElementDefinition { public static var wrapper = Node.th }
+    public enum TableHeaderCell: ElementDefinition { public static let wrapper = Node.th }
 }
 
 /// A container component that's rendered using the `<article>` element.
@@ -242,7 +242,7 @@ public extension ListItem {
 /// Component used to render an `<audio>` element for inline audio playback.
 public struct AudioPlayer: Component {
     /// Type used to define an audio player source, which points to an audio file.
-    public struct Source {
+    public struct Source: Sendable {
         /// Use an MP3 file at a given URL.
         /// - parameter url: The URL of the audio file to use.
         public static func mp3(at url: URLRepresentable) -> Self {
@@ -424,7 +424,7 @@ public struct Image: Component {
 }
 
 /// Protocol adopted by components that render controls for user input.
-public protocol InputComponent: Component {
+public protocol InputComponent: Component, Sendable {
     /// Whether the component's element should be automatically focused.
     var isAutoFocused: Bool { get set }
 }
@@ -569,11 +569,11 @@ public struct Link: Component {
 /// By default, any non-`ListItem` component that appears within a list is
 /// automatically wrapped into a `ListItem`, as to always produce semantically
 /// valid HTML.
-public struct List<Items: Sequence>: Component {
+public struct List<Items: Sequence & Sendable>: Component, Sendable where Items.Element: Sendable {
     /// The items that the list should render.
     public var items: Items
     /// A closure that transforms the list's items into renderable components.
-    public var content: (Items.Element) -> Component
+    public var content: @Sendable (Items.Element) -> Component
 
     @EnvironmentValue(.listStyle) private var style
 
@@ -582,7 +582,7 @@ public struct List<Items: Sequence>: Component {
     ///   - items: The items that the list should render.
     ///   - content: A closure that transforms the list's items into renderable components.
     public init(_ items: Items,
-                content: @escaping (Items.Element) -> Component) {
+                content: @escaping @Sendable (Items.Element) -> Component) {
         self.items = items
         self.content = content
     }

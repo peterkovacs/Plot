@@ -4,7 +4,7 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal protocol AnyAttribute {
+internal protocol AnyAttribute: Sendable {
     var name: String { get }
     var value: String? { get set }
     var replaceExisting: Bool { get }

@@ -11,7 +11,7 @@ import Foundation
 /// with a number of type aliases that provide easier access to specialized
 /// versions of this type, such as `Div`, `Header`, `Article`, and so on.
 /// See the `ElementDefinitions` namespace enum for a list of all such aliases.
-public struct ElementComponent<Definition: ElementDefinition>: ComponentContainer {
+public struct ElementComponent<Definition: ElementDefinition>: ComponentContainer, Sendable {
     @ComponentBuilder public var content: ContentProvider
 
     public init(@ComponentBuilder content: @escaping ContentProvider) {

@@ -10,7 +10,7 @@ import Foundation
 /// `id` or `class`. You normally don't construct `Attribute` values manually,
 /// but rather use Plot's various DSL APIs to create them, for example by using
 /// the `id()` or `class()` modifier on an HTML element.
-public struct Attribute<Context> {
+public struct Attribute<Context>: Sendable {
     /// The name of the attribute
     public var name: String
     /// The attribute's value

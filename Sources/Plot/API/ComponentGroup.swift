@@ -14,7 +14,7 @@ import Foundation
 /// individually. So, for example, applying the `class` modifier
 /// to a group results in each element within that group getting
 /// that class name assigned to it.
-public struct ComponentGroup: Component {
+public struct ComponentGroup: Component, Sendable {
     /// The group's members. Will be rendered in order.
     public var members: [Component]
     public var body: Component { Node.components(members) }
@@ -34,7 +34,7 @@ extension ComponentGroup: ComponentContainer {
 }
 
 extension ComponentGroup: Sequence {
-    public func makeIterator() -> Array<Component>.Iterator {
+    nonisolated public func makeIterator() -> Array<Component>.Iterator {
         members.makeIterator()
     }
 }

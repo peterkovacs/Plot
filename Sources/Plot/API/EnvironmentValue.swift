@@ -12,9 +12,13 @@ import Foundation
 /// to have its value be determined by the environment. Environment values are always
 /// associated with an `EnvironmentKey`, and are passed downwards through a component/node
 /// hierarchy until overridden by another value.
-@propertyWrapper public struct EnvironmentValue<Value>: AnyEnvironmentValue {
+@propertyWrapper public struct EnvironmentValue<Value: Sendable>: AnyEnvironmentValue, Sendable {
     /// The underlying value of the wrapped property.
-    public var wrappedValue: Value { environment.value?[key] ?? key.defaultValue }
+    public var wrappedValue: Value {
+        environment.withLock {
+            $0?[key] ?? key.defaultValue
+        }
+    }
 
     internal let environment = Environment.Reference()
     private let key: EnvironmentKey<Value>

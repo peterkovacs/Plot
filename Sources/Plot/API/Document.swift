@@ -12,7 +12,7 @@ import Foundation
 ///
 /// Built-in document types are created simply by initializing them, while
 /// custom ones can be created using the `Document.custom` APIs.
-public protocol DocumentFormat {
+public protocol DocumentFormat: Sendable {
     /// The root context of the document, which all top-level elements are
     /// bound to. Each document format is free to define any number of contexts
     /// in order to limit where an element or attribute may be placed.
@@ -27,7 +27,7 @@ public protocol DocumentFormat {
 /// to define your own custom document format, since the built-in formats (such
 /// as `HTML`, `RSS` and `XML`) completely wrap this type. To create custom
 /// `Document` values, use the `.custom` static factory methods.
-public struct Document<Format: DocumentFormat> {
+public struct Document<Format: DocumentFormat>: Sendable {
     /// The root elements that make up this document. See `Element` for more info.
     public var elements: [Element<Format.RootContext>]
 

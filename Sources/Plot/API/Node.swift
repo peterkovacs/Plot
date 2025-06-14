@@ -14,8 +14,8 @@ import Foundation
 /// a node. Nodes can also contain just text, which can either be
 /// escaped or treated as raw, pre-processed text. Groups can also be
 /// created to form components.
-public struct Node<Context> {
-    private let rendering: (inout Renderer) -> Void
+public struct Node<Context>: Sendable {
+    private let rendering: @Sendable (inout Renderer) -> Void
 }
 
 public extension Node {
@@ -162,7 +162,7 @@ public extension Node {
 
     /// Create a node that lazily evaluates its contents at rendering time.
     /// - parameter closure: A closure which evaluates to the contents of this node
-    static func `lazy`(_ closure: @escaping () -> Node ) -> Node {
+    static func `lazy`(_ closure: @escaping @Sendable () -> Node ) -> Node {
         Node { renderer in
             closure().rendering(&renderer)
         }

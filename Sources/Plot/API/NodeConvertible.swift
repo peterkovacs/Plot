@@ -11,7 +11,7 @@ import Foundation
 /// You typically don't conform to this protocol yourself within your own code.
 /// Instead, Plot will automatically convert the elements, components and
 /// attributes that you create using its DSL into nodes that are then rendered.
-public protocol NodeConvertible: Renderable {
+public protocol NodeConvertible: Renderable, Sendable {
     /// The context of the node that this type can be converted into.
     associatedtype Context
     /// Convert this instance into a renderable node. See `Node` for more info.

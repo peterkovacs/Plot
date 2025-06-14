@@ -4,11 +4,11 @@
 *  MIT license, see LICENSE file for details
 */
 
-import XCTest
+import Testing
 import Plot
 
-final class HTMLComponentTests: XCTestCase {
-    func testControlFlow() {
+@Suite("HTMLComponent") struct HTMLComponentTests {
+    @Test func testControlFlow() {
         let string: String? = "String"
         let nilString: String? = nil
         let bool = true
@@ -49,12 +49,12 @@ final class HTMLComponentTests: XCTestCase {
         }
         .render()
 
-        XCTAssertEqual(html, """
+        #expect(html == """
         <div><p>String</p><p>Nil</p><p>String</p><p>One</p><p>Two</p><p>True</p><p>Switch</p></div>
         """)
     }
 
-    func testNodeInteroperability() {
+    @Test func testNodeInteroperability() {
         let html = Div {
             Node.p("One")
             Node<Any>.component(Paragraph("Two"))
@@ -62,10 +62,10 @@ final class HTMLComponentTests: XCTestCase {
         }
         .render()
 
-        XCTAssertEqual(html, "<div><p>One</p><p>Two</p><p>Three</p></div>")
+        #expect(html == "<div><p>One</p><p>Two</p><p>Three</p></div>")
     }
 
-    func testIDAndClassModifiers() {
+    @Test func testIDAndClassModifiers() {
         let html = Link("Swift by Sundell",
             url: "https://swiftbysundell.com"
         )
@@ -73,30 +73,30 @@ final class HTMLComponentTests: XCTestCase {
         .class("link")
         .render()
 
-        XCTAssertEqual(html, """
+        #expect(html == """
         <a href="https://swiftbysundell.com" id="sxs-link" class="link">Swift by Sundell</a>
         """)
     }
 
-    func testAssigningDirectionalityToElement() {
+    @Test func testAssigningDirectionalityToElement() {
         let html = Paragraph("Hello")
             .directionality(.leftToRight)
             .render()
 
-        XCTAssertEqual(html, #"<p dir="ltr">Hello</p>"#)
+        #expect(html == #"<p dir="ltr">Hello</p>"#)
     }
 
-    func testAppendingClasses() {
+    @Test func testAppendingClasses() {
         let html = Paragraph("Hello")
             .class("one")
             .class("two")
             .class("three")
             .render()
 
-        XCTAssertEqual(html, #"<p class="one two three">Hello</p>"#)
+        #expect(html == #"<p class="one two three">Hello</p>"#)
     }
 
-    func testNotAppendingEmptyClasses() {
+    @Test func testNotAppendingEmptyClasses() {
         let html = Paragraph("Hello")
             .class("")
             .class("one")
@@ -104,10 +104,10 @@ final class HTMLComponentTests: XCTestCase {
             .class("two")
             .render()
 
-        XCTAssertEqual(html, #"<p class="one two">Hello</p>"#)
+        #expect(html == #"<p class="one two">Hello</p>"#)
     }
 
-    func testAppendingClassesToWrappingComponents() {
+    @Test func testAppendingClassesToWrappingComponents() {
         struct InnerWrapper: Component {
             var body: Component {
                 Paragraph("Hello").class("one")
@@ -121,10 +121,10 @@ final class HTMLComponentTests: XCTestCase {
         }
 
         let html = OuterWrapper().class("three").render()
-        XCTAssertEqual(html, #"<p class="one two three">Hello</p>"#)
+        #expect(html == #"<p class="one two three">Hello</p>"#)
     }
 
-    func testAppendingClassToWrappingComponentContainingGroup() {
+    @Test func testAppendingClassToWrappingComponentContainingGroup() {
         struct Wrapper: Component {
             var body: Component {
                 ComponentGroup {
@@ -136,20 +136,20 @@ final class HTMLComponentTests: XCTestCase {
         }
 
         let html = Wrapper().class("two").render()
-        XCTAssertEqual(html, #"<p class="one two">One</p><p class="one two">Two</p>"#)
+        #expect(html == #"<p class="one two">One</p><p class="one two">Two</p>"#)
     }
 
-    func testReplacingClass() {
+    @Test func testReplacingClass() {
         let html = Paragraph("Hello")
             .class("one")
             .class("two")
             .class("three", replaceExisting: true)
             .render()
 
-        XCTAssertEqual(html, #"<p class="three">Hello</p>"#)
+        #expect(html == #"<p class="three">Hello</p>"#)
     }
 
-    func testAddingClassToMultipleComponents() {
+    @Test func testAddingClassToMultipleComponents() {
         let html = ComponentGroup {
             Div()
             Div()
@@ -157,15 +157,15 @@ final class HTMLComponentTests: XCTestCase {
         .class("hello")
         .render()
 
-        XCTAssertEqual(html, #"<div class="hello"></div><div class="hello"></div>"#)
+        #expect(html == #"<div class="hello"></div><div class="hello"></div>"#)
     }
 
-    func testAddingClassToNode() {
+    @Test func testAddingClassToNode() {
         let html = Node.div(.p()).class("hello").render()
-        XCTAssertEqual(html, #"<div class="hello"><p></p></div>"#)
+        #expect(html == #"<div class="hello"><p></p></div>"#)
     }
 
-    func testEnvironmentValuesDoNotApplyToSiblings() {
+    @Test func testEnvironmentValuesDoNotApplyToSiblings() {
         let html = Div {
             Link("One", url: "/one")
                 .linkTarget(.blank)
@@ -175,7 +175,7 @@ final class HTMLComponentTests: XCTestCase {
         }
         .render()
 
-        XCTAssertEqual(html, """
+        #expect(html == """
         <div>\
         <a href="/one" target="_blank">One</a>\
         <a href="/two" rel="nofollow">Two</a>\
@@ -184,7 +184,7 @@ final class HTMLComponentTests: XCTestCase {
         """)
     }
 
-    func testApplyingEnvironmentValuesToTopLevelHTML() {
+    @Test func testApplyingEnvironmentValuesToTopLevelHTML() {
         let html = HTML(
             .body {
                 Link("One", url: "/one")
@@ -201,7 +201,7 @@ final class HTMLComponentTests: XCTestCase {
         """)
     }
 
-    func testUsingCustomEnvironmentKey() {
+    @Test func testUsingCustomEnvironmentKey() {
         struct TestComponent: Component {
             @EnvironmentValue(.init(identifier: "key")) var value: String?
 
@@ -214,10 +214,10 @@ final class HTMLComponentTests: XCTestCase {
             .environmentValue("Value", key: .init(identifier: "key"))
             .render()
 
-        XCTAssertEqual(html, "<p>Value</p>")
+        #expect(html == "<p>Value</p>")
     }
 
-    func testApplyingTextStyles() {
+    @Test func testApplyingTextStyles() {
         let html = Div {
             Text("Bold")
                 .bold()
@@ -234,7 +234,7 @@ final class HTMLComponentTests: XCTestCase {
         }
         .render()
 
-        XCTAssertEqual(html, """
+        #expect(html == """
         <div>\
         <b>Bold</b><br/>\
         <em>Italic</em><br/>\
@@ -244,36 +244,36 @@ final class HTMLComponentTests: XCTestCase {
         """)
     }
 
-    func testTextConcatenation() {
+    @Test func testTextConcatenation() {
         let text = Text("One") + Text(" ") + Text("Two").bold()
-        XCTAssertEqual(text.render(), "One <b>Two</b>")
+        #expect(text.render() == "One <b>Two</b>")
     }
 
-    func testApplyingAccessibilityLabel() {
+    @Test func testApplyingAccessibilityLabel() {
         let html = Paragraph("Text")
             .accessibilityLabel("Label")
             .render()
 
-        XCTAssertEqual(html, #"<p aria-label="Label">Text</p>"#)
+        #expect(html == #"<p aria-label="Label">Text</p>"#)
     }
 
-    func testApplyingDataAttribute() {
+    @Test func testApplyingDataAttribute() {
         let html = Paragraph("Text")
             .data(named: "test", value: "value")
             .render()
 
-        XCTAssertEqual(html, #"<p data-test="value">Text</p>"#)
+        #expect(html == #"<p data-test="value">Text</p>"#)
     }
 
-    func testApplyingStyleAttribute() {
+    @Test func testApplyingStyleAttribute() {
         let html = Paragraph("Text")
             .style("color: #000;")
             .render()
 
-        XCTAssertEqual(html, #"<p style="color: #000;">Text</p>"#)
+        #expect(html == #"<p style="color: #000;">Text</p>"#)
     }
 
-    func testElementBasedComponents() {
+    @Test func testElementBasedComponents() {
         let html = HTML {
             Article("Article")
             Button("Button")
@@ -327,7 +327,7 @@ final class HTMLComponentTests: XCTestCase {
         """)
     }
 
-    func testAudioPlayer() {
+    @Test func testAudioPlayer() {
         let html = HTML {
             AudioPlayer(source: .mp3(at: "a.mp3"), showControls: false)
             AudioPlayer(source: .wav(at: "b.wav"), showControls: true)
@@ -343,7 +343,7 @@ final class HTMLComponentTests: XCTestCase {
         """)
     }
 
-    func testForm() {
+    @Test func testForm() {
         let html = Form(
             url: "url.com",
             method: .post,
@@ -374,7 +374,7 @@ final class HTMLComponentTests: XCTestCase {
         )
         .render()
 
-        XCTAssertEqual(html, """
+        #expect(html == """
         <form action="url.com" method="post">\
         <fieldset>\
         <label>Username\
@@ -390,7 +390,7 @@ final class HTMLComponentTests: XCTestCase {
         """)
     }
 
-    func testIFrame() {
+    @Test func testIFrame() {
         let html = IFrame(
             url: "url.com",
             addBorder: false,
@@ -399,22 +399,22 @@ final class HTMLComponentTests: XCTestCase {
         )
         .render()
 
-        XCTAssertEqual(html, """
+        #expect(html == """
         <iframe src="url.com" frameborder="0" allowfullscreen allow="gyroscope"></iframe>
         """)
     }
 
-    func testImageWithDescription() {
+    @Test func testImageWithDescription() {
         let html = Image(url: "image.png", description: "My image").render()
-        XCTAssertEqual(html, #"<img src="image.png" alt="My image"/>"#)
+        #expect(html == #"<img src="image.png" alt="My image"/>"#)
     }
 
-    func testImageWithoutDescription() {
+    @Test func testImageWithoutDescription() {
         let html = Image("image.png").render()
-        XCTAssertEqual(html, #"<img src="image.png"/>"#)
+        #expect(html == #"<img src="image.png"/>"#)
     }
 
-    func testLinkRelationshipAndTarget() {
+    @Test func testLinkRelationshipAndTarget() {
         let html = Div {
             Link("First", url: "/first")
             Link("Second", url: "/second")
@@ -425,7 +425,7 @@ final class HTMLComponentTests: XCTestCase {
         .linkTarget(.blank)
         .render()
 
-        XCTAssertEqual(html, """
+        #expect(html == """
         <div>\
         <a href="/first" rel="nofollow" target="_blank">First</a>\
         <a href="/second" rel="noreferrer">Second</a>\
@@ -433,24 +433,24 @@ final class HTMLComponentTests: XCTestCase {
         """)
     }
 
-    func testOrderedList() {
+    @Test func testOrderedList() {
         let html = List(["One", "Two"])
             .listStyle(.ordered)
             .render()
 
-        XCTAssertEqual(html, "<ol><li>One</li><li>Two</li></ol>")
+        #expect(html == "<ol><li>One</li><li>Two</li></ol>")
     }
     
-    func testTime() {
+    @Test func testTime() {
         let html = Time(datetime: "2011-11-18T14:54:39Z") {
             Paragraph("Hello World")
         }
         .render()
         
-        XCTAssertEqual(html, #"<time datetime="2011-11-18T14:54:39Z"><p>Hello World</p></time>"#)
+        #expect(html == #"<time datetime="2011-11-18T14:54:39Z"><p>Hello World</p></time>"#)
     }
 
-    func testOrderedListWithExplicitItems() {
+    @Test func testOrderedListWithExplicitItems() {
         struct SeventhComponent: Component {
             var body: Component { ListItem("Seven") }
         }
@@ -483,7 +483,7 @@ final class HTMLComponentTests: XCTestCase {
         .listStyle(.ordered)
         .render()
 
-        XCTAssertEqual(html, """
+        #expect(html == """
         <ol>\
         <li value="1">One</li>\
         <li>Two</li>\
@@ -499,7 +499,7 @@ final class HTMLComponentTests: XCTestCase {
         """)
     }
 
-    func testOrderedListWithEmptyComponent() {
+    @Test func testOrderedListWithEmptyComponent() {
         let html = List {
             Text("Hello")
             EmptyComponent()
@@ -507,22 +507,22 @@ final class HTMLComponentTests: XCTestCase {
         .listStyle(.ordered)
         .render()
 
-        XCTAssertEqual(html, "<ol><li>Hello</li></ol>")
+        #expect(html == "<ol><li>Hello</li></ol>")
     }
 
-    func testUnorderedList() {
+    @Test func testUnorderedList() {
         let html = List(["One", "Two"]).render()
-        XCTAssertEqual(html, "<ul><li>One</li><li>Two</li></ul>")
+        #expect(html == "<ul><li>One</li><li>Two</li></ul>")
     }
 
-    func testUnorderedListWithCustomItemClass() {
+    @Test func testUnorderedListWithCustomItemClass() {
         let html = List([1, 2]) { number in
             Paragraph(String(number))
         }
         .listStyle(.unordered.withItemClass("item"))
         .render()
 
-        XCTAssertEqual(html, """
+        #expect(html == """
         <ul>\
         <li class="item"><p>1</p></li>\
         <li class="item"><p>2</p></li>\
@@ -530,7 +530,7 @@ final class HTMLComponentTests: XCTestCase {
         """)
     }
 
-    func testUngroupedTable() {
+    @Test func testUngroupedTable() {
         let html = Table {
             Text("Row one")
             TableRow {
@@ -548,7 +548,7 @@ final class HTMLComponentTests: XCTestCase {
         }
         .render()
 
-        XCTAssertEqual(html, """
+        #expect(html == """
         <table>\
         <tr><td>Row one</td></tr>\
         <tr><td>Row two, cell one</td><td>Row two, cell two</td></tr>\
@@ -558,7 +558,7 @@ final class HTMLComponentTests: XCTestCase {
         """)
     }
 
-    func testGroupedTable() {
+    @Test func testGroupedTable() {
         let html = Table(
             caption: TableCaption("Caption"),
             header: TableRow { Text("Header") },
@@ -581,7 +581,7 @@ final class HTMLComponentTests: XCTestCase {
         )
         .render()
 
-        XCTAssertEqual(html, """
+        #expect(html == """
         <table>\
         <caption>Caption</caption>\
         <thead><tr><th>Header</th></tr></thead>\

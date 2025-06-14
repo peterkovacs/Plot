@@ -6,10 +6,10 @@
 
 import Foundation
 
-internal struct ElementWrapper {
+internal struct ElementWrapper: Sendable {
     var wrappingElementName: String
     var deferredAttributes = [AnyAttribute]()
-    var body: (Component) -> Component
+    var body: @Sendable (Component) -> Component
 }
 
 extension ElementWrapper {
