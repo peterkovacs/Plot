@@ -169,6 +169,8 @@ public enum ElementDefinitions: Sendable {
     public enum Navigation: ElementDefinition { public static let wrapper = Node.nav }
     /// Definition for the `<p>` element.
     public enum Paragraph: ElementDefinition { public static let wrapper = Node.p }
+    /// Definition for the `<section>` element.
+    public enum Section: ElementDefinition { public static let wrapper = Node.section }
     /// Definition for the `<span>` element.
     public enum Span: ElementDefinition { public static let wrapper = Node.span }
     /// Definition for the `<summary>` element.
@@ -217,6 +219,8 @@ public typealias Main = ElementComponent<ElementDefinitions.Main>
 public typealias Navigation = ElementComponent<ElementDefinitions.Navigation>
 /// A container component that's rendered using the `<p>` element.
 public typealias Paragraph = ElementComponent<ElementDefinitions.Paragraph>
+/// A container component that's rendered using the `<section>` element.
+public typealias Section = ElementComponent<ElementDefinitions.Section>
 /// A container component that's rendered using the `<span>` element.
 public typealias Span = ElementComponent<ElementDefinitions.Span>
 /// A container component that's rendered using the `<summary>` element.
